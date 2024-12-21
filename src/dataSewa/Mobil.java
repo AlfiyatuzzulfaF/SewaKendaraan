@@ -9,28 +9,29 @@ package dataSewa;
  * @author MSI GAMING
  */
 public class Mobil extends Kendaraan{
-    private String tipeMobil;
-    private int kapasitasPenumpang;
-
-    public Mobil(int idKendaraan, String namaKendaraan, String jenisKendaraan, double hargaSewa, String status, String tipeMobil, int kapasitasPenumpang) {
-        super(idKendaraan, namaKendaraan, jenisKendaraan, hargaSewa, status);
-        this.tipeMobil = tipeMobil;
-        this.kapasitasPenumpang = kapasitasPenumpang;
+    private String tipeKendaraan;
+    private double biaya;
+    
+    // Constructor
+    public Mobil(int id, String platNomor, String tipeKendaraan, double biaya) {
+        super(id, platNomor);
+        this.tipeKendaraan = tipeKendaraan;
+        this.biaya = biaya;
     }
 
-    public String getTipeMobil() {
-        return tipeMobil;
+    public String getTipeKendaraan() {
+        return tipeKendaraan;
     }
 
-    public int getKapasitasPenumpang() {
-        return kapasitasPenumpang;
+    public double getBiaya() {
+        return biaya;
     }
 
-    public void setTipeMobil(String tipeMobil) {
-        this.tipeMobil = tipeMobil;
+    public void setTipeKendaraan(String tipeKendaraan) {
+        this.tipeKendaraan = tipeKendaraan;
     }
 
-    public void setKapasitasPenumpang(int kapasitasPenumpang) {
-        this.kapasitasPenumpang = kapasitasPenumpang;
+    public void setBiaya(double biaya) {
+        this.biaya = biaya;
     }
 }

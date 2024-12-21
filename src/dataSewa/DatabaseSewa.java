@@ -10,7 +10,7 @@ import java.sql.*;
  * @author MSI GAMING
  */
 public class DatabaseSewa {
-    private static final String URL="jdbc:mysql://localhost:3306/sewakendaraan";
+    private static final String URL="jdbc:mysql://localhost:3306/db_sewakendaraan";
     private static final String USER="root";
     private static final String PASSWORD="";
     

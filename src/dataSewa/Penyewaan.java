@@ -4,73 +4,96 @@
  */
 package dataSewa;
 
-import java.util.Date;
 /**
  *
  * @author MSI GAMING
  */
 public class Penyewaan {
-    private int idSewa;
-    private int idCustomer;
-    private int idKendaraan;
-    private Date tanggalSewa;
-    private Date tanggalKembali;
+    private String namaCustomer;
+    private String jenisKendaraan;
+    private String tipeKendaraan;
+    private String platNomor;
+    private double biaya;
+    private String tanggalSewa;
+    private String tanggalKembali;
     private double totalBiaya;
     
-    public Penyewaan(int idSewa, int idCustomer, int idKendaraan, Date tanggalSewa, Date tanggalKembali, double totalBiaya) {
-        this.idSewa = idSewa;
-        this.idCustomer = idCustomer;
-        this.idKendaraan = idKendaraan;
+    // Constructor
+    public Penyewaan(String namaCustomer, String jenisKendaraan, String tipeKendaraan,
+                     String platNomor, String tanggalSewa, String tanggalKembali, double biayaPerHari) {
+        this.namaCustomer = namaCustomer;
+        this.jenisKendaraan = jenisKendaraan;
+        this.tipeKendaraan = tipeKendaraan;
+        this.platNomor = platNomor;
         this.tanggalSewa = tanggalSewa;
         this.tanggalKembali = tanggalKembali;
-        this.totalBiaya = totalBiaya;
     }
 
-    public int getIdSewa() {
-        return idSewa;
+    public String getNamaCustomer() {
+        return namaCustomer;
     }
 
-    public int getIdCustomer() {
-        return idCustomer;
+    public String getJenisKendaraan() {
+        return jenisKendaraan;
     }
 
-    public int getIdKendaraan() {
-        return idKendaraan;
+    public String getTipeKendaraan() {
+        return tipeKendaraan;
     }
 
-    public Date getTanggalSewa() {
-        return tanggalSewa;
+    public String getPlatNomor() {
+        return platNomor;
     }
 
-    public Date getTanggalKembali() {
-        return tanggalKembali;
+    public double getBiaya() {
+        return biaya;
     }
 
     public double getTotalBiaya() {
         return totalBiaya;
     }
 
-    public void setIdSewa(int idSewa) {
-        this.idSewa = idSewa;
+    public String getTanggalSewa() {
+        return tanggalSewa;
     }
 
-    public void setIdCustomer(int idCustomer) {
-        this.idCustomer = idCustomer;
+    public String getTanggalKembali() {
+        return tanggalKembali;
     }
 
-    public void setIdKendaraan(int idKendaraan) {
-        this.idKendaraan = idKendaraan;
+    public void setNamaCustomer(String namaCustomer) {
+        this.namaCustomer = namaCustomer;
     }
 
-    public void setTanggalSewa(Date tanggalSewa) {
-        this.tanggalSewa = tanggalSewa;
+    public void setJenisKendaraan(String jenisKendaraan) {
+        this.jenisKendaraan = jenisKendaraan;
     }
 
-    public void setTanggalKembali(Date tanggalKembali) {
-        this.tanggalKembali = tanggalKembali;
+    public void setTipeKendaraan(String tipeKendaraan) {
+        this.tipeKendaraan = tipeKendaraan;
+    }
+
+    public void setPlatNomor(String platNomor) {
+        this.platNomor = platNomor;
+    }
+
+    public void setBiaya(double biaya) {
+        this.biaya = biaya;
     }
 
     public void setTotalBiaya(double totalBiaya) {
         this.totalBiaya = totalBiaya;
+    }
+
+    public void setTanggalSewa(String tanggalSewa) {
+        this.tanggalSewa = tanggalSewa;
+    }
+
+    public void setTanggalKembali(String tanggalKembali) {
+        this.tanggalKembali = tanggalKembali;
+    }
+
+    public void TotalBiaya(int durasi) {
+        totalBiaya = biaya * durasi;
     }
 }

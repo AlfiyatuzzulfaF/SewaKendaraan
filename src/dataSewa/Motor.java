@@ -9,28 +9,29 @@ package dataSewa;
  * @author MSI GAMING
  */
 public class Motor extends Kendaraan{
-    private String tipeMotor;
-    private int kapasitasMesin;
+    private String tipeKendaraan;
+    private double biaya;
     
-    public Motor(int idKendaraan, String namaKendaraan, String jenisKendaraan, double hargaSewa, String status, String tipeMotor, int kapasitasMesin) {
-        super(idKendaraan, namaKendaraan, jenisKendaraan, hargaSewa, status);
-        this.tipeMotor = tipeMotor;
-        this.kapasitasMesin = kapasitasMesin;
+    // Constructor
+    public Motor(int id, String platNomor, String tipeKendaraan, double biaya) {
+        super(id, platNomor);
+        this.tipeKendaraan = tipeKendaraan;
+        this.biaya = biaya;
     }
 
-    public String getTipeMotor() {
-        return tipeMotor;
+    public String getTipeKendaraan() {
+        return tipeKendaraan;
     }
 
-    public int getKapasitasMesin() {
-        return kapasitasMesin;
+    public double getBiaya() {
+        return biaya;
     }
 
-    public void setTipeMotor(String tipeMotor) {
-        this.tipeMotor = tipeMotor;
+    public void setTipeKendaraan(String tipeKendaraan) {
+        this.tipeKendaraan = tipeKendaraan;
     }
 
-    public void setKapasitasMesin(int kapasitasMesin) {
-        this.kapasitasMesin = kapasitasMesin;
+    public void setBiaya(double biaya) {
+        this.biaya = biaya;
     }
 }
