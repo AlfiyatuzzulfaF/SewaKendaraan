@@ -4,6 +4,10 @@
  */
 package dataSewa;
 
+import javax.swing.DefaultComboBoxModel;
+import java.sql.*;
+import javax.swing.*;
+
 /**
  *
  * @author MSI GAMING
@@ -15,6 +19,7 @@ public class FormPenyewaan extends javax.swing.JFrame {
      */
     public FormPenyewaan() {
         initComponents();
+        loadJenisKendaraan();
     }
 
     /**
@@ -27,62 +32,87 @@ public class FormPenyewaan extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        lblJudul = new javax.swing.JLabel();
+        lblNama = new javax.swing.JLabel();
+        lblJenisKendaraan = new javax.swing.JLabel();
+        lblTipeKendaraan = new javax.swing.JLabel();
+        lblTanggalSewa = new javax.swing.JLabel();
+        lblTanggalKembali = new javax.swing.JLabel();
+        cbJenisKendaraan = new javax.swing.JComboBox<>();
+        cbTipeKendaraan = new javax.swing.JComboBox<>();
+        txtTanggalKembali = new javax.swing.JTextField();
+        txtTanggalSewa = new javax.swing.JTextField();
+        btnSimpan = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        btnHapus = new javax.swing.JButton();
+        txtNama = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblPenyewaan = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel1.setText("Penyewaan Kendaraan");
+        lblJudul.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblJudul.setForeground(new java.awt.Color(51, 51, 51));
+        lblJudul.setText("Penyewaan Kendaraan");
 
-        jLabel2.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel2.setText("Nama");
+        lblNama.setForeground(new java.awt.Color(51, 51, 51));
+        lblNama.setText("Nama");
 
-        jLabel3.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel3.setText("Jenis Kendaraan");
+        lblJenisKendaraan.setForeground(new java.awt.Color(51, 51, 51));
+        lblJenisKendaraan.setText("Jenis Kendaraan");
 
-        jLabel4.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel4.setText("Tipe Kendaraan");
+        lblTipeKendaraan.setForeground(new java.awt.Color(51, 51, 51));
+        lblTipeKendaraan.setText("Tipe Kendaraan");
 
-        jLabel5.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel5.setText("Tanggal Sewa");
+        lblTanggalSewa.setForeground(new java.awt.Color(51, 51, 51));
+        lblTanggalSewa.setText("Tanggal Sewa");
 
-        jLabel6.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel6.setText("Tanggal Kembali");
+        lblTanggalKembali.setForeground(new java.awt.Color(51, 51, 51));
+        lblTanggalKembali.setText("Tanggal Kembali");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Motor", "Mobil" }));
+        cbJenisKendaraan.setBackground(new java.awt.Color(255, 255, 255));
+        cbJenisKendaraan.setForeground(new java.awt.Color(51, 51, 51));
 
-        jButton1.setText("Simpan");
-
-        jButton2.setText("Edit");
-
-        jButton3.setText("Hapus");
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        cbTipeKendaraan.setBackground(new java.awt.Color(255, 255, 255));
+        cbTipeKendaraan.setForeground(new java.awt.Color(51, 51, 51));
+        cbTipeKendaraan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                cbTipeKendaraanActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        txtTanggalKembali.setBackground(new java.awt.Color(255, 255, 255));
+        txtTanggalKembali.setForeground(new java.awt.Color(255, 255, 255));
+
+        txtTanggalSewa.setBackground(new java.awt.Color(255, 255, 255));
+        txtTanggalSewa.setForeground(new java.awt.Color(255, 255, 255));
+
+        btnSimpan.setBackground(new java.awt.Color(255, 255, 255));
+        btnSimpan.setForeground(new java.awt.Color(51, 51, 51));
+        btnSimpan.setText("Simpan");
+
+        btnEdit.setBackground(new java.awt.Color(255, 255, 255));
+        btnEdit.setForeground(new java.awt.Color(51, 51, 51));
+        btnEdit.setText("Edit");
+
+        btnHapus.setBackground(new java.awt.Color(255, 255, 255));
+        btnHapus.setForeground(new java.awt.Color(51, 51, 51));
+        btnHapus.setText("Hapus");
+
+        txtNama.setBackground(new java.awt.Color(255, 255, 255));
+        txtNama.setForeground(new java.awt.Color(51, 51, 51));
+        txtNama.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNamaActionPerformed(evt);
+            }
+        });
+
+        tblPenyewaan.setBackground(new java.awt.Color(255, 255, 255));
+        tblPenyewaan.setForeground(new java.awt.Color(51, 51, 51));
+        tblPenyewaan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
@@ -93,7 +123,7 @@ public class FormPenyewaan extends javax.swing.JFrame {
                 "ID", "Nama", "Jenis Kendaraan", "Tipe Kendaraan", "Plat Nomor", "Tanggal Sewa", "Tanggal Kembali", "Total Biaya"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblPenyewaan);
 
         jLabel7.setForeground(new java.awt.Color(51, 51, 51));
         jLabel7.setText("Keterangan");
@@ -106,63 +136,63 @@ public class FormPenyewaan extends javax.swing.JFrame {
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(lblJenisKendaraan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblNama, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblTipeKendaraan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSimpan)
+                    .addComponent(btnEdit)
+                    .addComponent(btnHapus))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 783, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cbJenisKendaraan, 0, 310, Short.MAX_VALUE)
+                            .addComponent(cbTipeKendaraan, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(31, 31, 31)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(51, 51, 51)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblTanggalKembali)
+                            .addComponent(lblTanggalSewa, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-                            .addComponent(jTextField3)))
-                    .addComponent(jTextField1))
+                            .addComponent(txtTanggalSewa)
+                            .addComponent(txtTanggalKembali)))
+                    .addComponent(txtNama))
                 .addContainerGap(22, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addComponent(lblJudul)
                 .addGap(379, 379, 379))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(9, 9, 9)
-                .addComponent(jLabel1)
+                .addComponent(lblJudul)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblNama)
+                    .addComponent(txtNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblJenisKendaraan)
+                    .addComponent(cbJenisKendaraan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTanggalSewa)
+                    .addComponent(txtTanggalSewa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblTipeKendaraan)
+                    .addComponent(cbTipeKendaraan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTanggalKembali)
+                    .addComponent(txtTanggalKembali, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnSimpan)
                         .addGap(54, 54, 54)
-                        .addComponent(jButton2)
+                        .addComponent(btnEdit)
                         .addGap(51, 51, 51)
-                        .addComponent(jButton3))
+                        .addComponent(btnHapus))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel7)
@@ -183,9 +213,18 @@ public class FormPenyewaan extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtNamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtNamaActionPerformed
+
+    private void cbTipeKendaraanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipeKendaraanActionPerformed
+        String jenisKendaraan = (String) cbJenisKendaraan.getSelectedItem();
+        
+        // Jika jenis kendaraan dipilih, update cbTipeKendaraan
+        if (jenisKendaraan != null && !jenisKendaraan.isEmpty()) {
+            updateTipeKendaraan(jenisKendaraan);
+        }
+    }//GEN-LAST:event_cbTipeKendaraanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -221,25 +260,79 @@ public class FormPenyewaan extends javax.swing.JFrame {
             }
         });
     }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnHapus;
+    private javax.swing.JButton btnSimpan;
+    private javax.swing.JComboBox<String> cbJenisKendaraan;
+    private javax.swing.JComboBox<String> cbTipeKendaraan;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JLabel lblJenisKendaraan;
+    private javax.swing.JLabel lblJudul;
+    private javax.swing.JLabel lblNama;
+    private javax.swing.JLabel lblTanggalKembali;
+    private javax.swing.JLabel lblTanggalSewa;
+    private javax.swing.JLabel lblTipeKendaraan;
+    private javax.swing.JTable tblPenyewaan;
+    private javax.swing.JTextField txtNama;
+    private javax.swing.JTextField txtTanggalKembali;
+    private javax.swing.JTextField txtTanggalSewa;
     // End of variables declaration//GEN-END:variables
+
+    
+    private void loadJenisKendaraan() {
+        String[] jenisKendaraan = {"", "Motor", "Mobil"};
+        cbJenisKendaraan.setModel(new DefaultComboBoxModel<>(jenisKendaraan));
+
+        // Menambahkan ItemListener untuk memperbarui tipe kendaraan secara otomatis
+        cbJenisKendaraan.addItemListener((java.awt.event.ItemEvent evt) -> {
+            // Panggil updateTipeKendaraan hanya jika jenis kendaraan dipilih
+            String jenisKendaraan1 = (String) cbJenisKendaraan.getSelectedItem();
+            if (jenisKendaraan1 != null && !jenisKendaraan1.trim().isEmpty()) {
+                updateTipeKendaraan(jenisKendaraan1);
+            }
+        });   
+    }
+    
+    private void updateTipeKendaraan(String jenisKendaraan) {
+        DefaultComboBoxModel<String> tipeModel = new DefaultComboBoxModel<>();
+    
+        String query = "SELECT tipe_kendaraan FROM kendaraan WHERE jenis_kendaraan = ?";
+
+        try (Connection conn = DatabaseSewa.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, jenisKendaraan);
+            ResultSet rs = ps.executeQuery();
+
+            // Cek apakah query mengembalikan hasil
+            boolean dataFound = false;
+            while (rs.next()) {
+                dataFound = true;
+                String tipeKendaraan = rs.getString("tipe_kendaraan");
+                tipeModel.addElement(tipeKendaraan);
+            }
+
+            // Jika tidak ada data ditemukan
+            if (!dataFound) {
+                JOptionPane.showMessageDialog(this, "Tidak ada tipe kendaraan untuk jenis ini.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            // Update combo box
+            SwingUtilities.invokeLater(() -> cbTipeKendaraan.setModel(tipeModel));
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, 
+                    "Terjadi kesalahan saat mengambil data tipe kendaraan.\n" + e.getMessage(), 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 }
+    
