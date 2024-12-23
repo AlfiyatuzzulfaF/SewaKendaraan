@@ -26,8 +26,30 @@ public class FormPenyewaan extends javax.swing.JFrame {
         initComponents();
         loadJenisKendaraan();
         loadDataPenyewaan();
-    }
-
+        
+        tblPenyewaan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = tblPenyewaan.getSelectedRow();
+                    if (row != -1) { // Cek apakah baris valid dipilih
+                    // Ambil data dari tabel dan masukkan ke dalam form
+                    String id = tblPenyewaan.getValueAt(row, 0).toString();
+                    String nama = tblPenyewaan.getValueAt(row, 1).toString();
+                    String jenisKendaraan = tblPenyewaan.getValueAt(row, 2).toString();
+                    String tipeKendaraan = tblPenyewaan.getValueAt(row, 3).toString();
+                    String platNomor = tblPenyewaan.getValueAt(row, 4).toString();
+                    String tglSewa = tblPenyewaan.getValueAt(row, 5).toString();
+                    String tglKembali = tblPenyewaan.getValueAt(row, 6).toString(); 
+                    
+                    // Masukkan data ke dalam form
+                    txtNama.setText(nama);
+                    cbJenisKendaraan.setSelectedItem(jenisKendaraan);
+                    cbTipeKendaraan.setSelectedItem(tipeKendaraan);
+                    txtTanggalSewa.setText(tglSewa);
+                    txtTanggalKembali.setText(tglKembali);
+            }
+        }
+    });
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -54,7 +76,6 @@ public class FormPenyewaan extends javax.swing.JFrame {
         txtNama = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPenyewaan = new javax.swing.JTable();
-        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -108,10 +129,20 @@ public class FormPenyewaan extends javax.swing.JFrame {
         btnEdit.setBackground(new java.awt.Color(255, 255, 255));
         btnEdit.setForeground(new java.awt.Color(51, 51, 51));
         btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         btnHapus.setBackground(new java.awt.Color(255, 255, 255));
         btnHapus.setForeground(new java.awt.Color(51, 51, 51));
         btnHapus.setText("Hapus");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
 
         txtNama.setBackground(new java.awt.Color(255, 255, 255));
         txtNama.setForeground(new java.awt.Color(51, 51, 51));
@@ -133,9 +164,6 @@ public class FormPenyewaan extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblPenyewaan);
 
-        jLabel7.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel7.setText("Keterangan");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -143,7 +171,6 @@ public class FormPenyewaan extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblJenisKendaraan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblNama, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblTipeKendaraan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -202,9 +229,7 @@ public class FormPenyewaan extends javax.swing.JFrame {
                         .addGap(56, 56, 56)
                         .addComponent(btnHapus))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel7)
-                .addGap(14, 14, 14))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -282,6 +307,98 @@ public class FormPenyewaan extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSimpanActionPerformed
 
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        String idPenyewaan = tblPenyewaan.getValueAt(tblPenyewaan.getSelectedRow(), 0).toString(); // Ambil ID penyewaan dari baris yang dipilih
+        String namaCustomer = txtNama.getText();
+        String jenisKendaraan = (String) cbJenisKendaraan.getSelectedItem();
+        String tipeKendaraan = (String) cbTipeKendaraan.getSelectedItem();
+        String platNomor = "";
+        String tglSewaString = txtTanggalSewa.getText();
+        String tglKembaliString = txtTanggalKembali.getText();
+
+        try {
+            Date startDate = convertToDate(tglSewaString);
+            Date endDate = convertToDate(tglKembaliString);
+
+            if (namaCustomer.isEmpty() || jenisKendaraan.isEmpty() || tipeKendaraan.isEmpty() || tglSewaString.isEmpty() || tglKembaliString.isEmpty()) {
+                JOptionPane.showMessageDialog(FormPenyewaan.this, "Mohon lengkapi semua data!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Hitung durasi dan biaya
+            long durasi = calculateDurasi(startDate, endDate);
+            double totalBiaya = calculateTotalBiaya(tipeKendaraan, durasi);
+
+            String queryPlat = "SELECT plat_nomor FROM kendaraan WHERE tipe_kendaraan = ?";
+            try (Connection conn = DatabaseSewa.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(queryPlat)) {
+                ps.setString(1, tipeKendaraan);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    platNomor = rs.getString("plat_nomor");
+                }
+            }
+
+            // Update data penyewaan di database
+            String updateQuery = "UPDATE penyewaan SET nama_customer = ?, jenis_kendaraan = ?, tipe_kendaraan = ?, plat_nomor = ?, tanggal_sewa = ?, tanggal_kembali = ?, total_biaya = ? WHERE id = ?";
+            try (Connection conn = DatabaseSewa.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(updateQuery)) {
+                ps.setString(1, namaCustomer);
+                ps.setString(2, jenisKendaraan);
+                ps.setString(3, tipeKendaraan);
+                ps.setString(4, platNomor);
+                ps.setDate(5, new java.sql.Date(startDate.getTime()));
+                ps.setDate(6, new java.sql.Date(endDate.getTime()));
+                ps.setDouble(7, totalBiaya);
+                ps.setString(8, idPenyewaan); // Update berdasarkan ID
+                ps.executeUpdate();
+
+                // Menampilkan pesan sukses
+                JOptionPane.showMessageDialog(FormPenyewaan.this, "Data penyewaan berhasil diperbarui!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                loadDataPenyewaan(); // Reload data penyewaan setelah update
+            }
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(FormPenyewaan.this, "Format tanggal salah! Gunakan format dd/MM/yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(FormPenyewaan.this, "Error menyimpan data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    int[] selectedRow = new int[1];
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        if (selectedRow[0] == -1) {
+            JOptionPane.showMessageDialog(FormPenyewaan.this, "Pilih baris yang ingin dihapus terlebih dahulu.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Ambil ID penyewaan dari baris yang dipilih
+        String idPenyewaan = tblPenyewaan.getValueAt(selectedRow[0], 0).toString();
+
+        // Konfirmasi penghapusan
+        int confirmation = JOptionPane.showConfirmDialog(FormPenyewaan.this, 
+            "Apakah Anda yakin ingin menghapus data penyewaan ini?", 
+            "Konfirmasi Hapus", 
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            // Hapus data dari database
+            String deleteQuery = "DELETE FROM penyewaan WHERE id = ?";
+            try (Connection conn = DatabaseSewa.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(deleteQuery)) {
+                ps.setString(1, idPenyewaan);
+                ps.executeUpdate();
+
+                // Menampilkan pesan sukses
+                JOptionPane.showMessageDialog(FormPenyewaan.this, "Data penyewaan berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                loadDataPenyewaan();
+                kosongkanForm();// Reload data setelah penghapusan
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(FormPenyewaan.this, "Error menghapus data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnHapusActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -325,7 +442,6 @@ public class FormPenyewaan extends javax.swing.JFrame {
     private javax.swing.JButton btnSimpan;
     private javax.swing.JComboBox<String> cbJenisKendaraan;
     private javax.swing.JComboBox<String> cbTipeKendaraan;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblJenisKendaraan;
@@ -463,4 +579,13 @@ public class FormPenyewaan extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error loading data penyewaan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void kosongkanForm() {
+    // Mengosongkan semua field input
+        txtNama.setText("");
+        cbJenisKendaraan.setSelectedIndex(0); // Reset ComboBox ke pilihan pertama
+        cbTipeKendaraan.setSelectedIndex(0);  // Reset ComboBox ke pilihan pertama
+        txtTanggalSewa.setText("");
+        txtTanggalKembali.setText("");
+}
 }
