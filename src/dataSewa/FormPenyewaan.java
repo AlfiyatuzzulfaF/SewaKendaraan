@@ -6,7 +6,12 @@ package dataSewa;
 
 import javax.swing.DefaultComboBoxModel;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,6 +25,7 @@ public class FormPenyewaan extends javax.swing.JFrame {
     public FormPenyewaan() {
         initComponents();
         loadJenisKendaraan();
+        loadDataPenyewaan();
     }
 
     /**
@@ -85,14 +91,19 @@ public class FormPenyewaan extends javax.swing.JFrame {
         });
 
         txtTanggalKembali.setBackground(new java.awt.Color(255, 255, 255));
-        txtTanggalKembali.setForeground(new java.awt.Color(255, 255, 255));
+        txtTanggalKembali.setForeground(new java.awt.Color(51, 51, 51));
 
         txtTanggalSewa.setBackground(new java.awt.Color(255, 255, 255));
-        txtTanggalSewa.setForeground(new java.awt.Color(255, 255, 255));
+        txtTanggalSewa.setForeground(new java.awt.Color(51, 51, 51));
 
         btnSimpan.setBackground(new java.awt.Color(255, 255, 255));
         btnSimpan.setForeground(new java.awt.Color(51, 51, 51));
         btnSimpan.setText("Simpan");
+        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimpanActionPerformed(evt);
+            }
+        });
 
         btnEdit.setBackground(new java.awt.Color(255, 255, 255));
         btnEdit.setForeground(new java.awt.Color(51, 51, 51));
@@ -114,10 +125,7 @@ public class FormPenyewaan extends javax.swing.JFrame {
         tblPenyewaan.setForeground(new java.awt.Color(51, 51, 51));
         tblPenyewaan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "ID", "Nama", "Jenis Kendaraan", "Tipe Kendaraan", "Plat Nomor", "Tanggal Sewa", "Tanggal Kembali", "Total Biaya"
@@ -189,9 +197,9 @@ public class FormPenyewaan extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnSimpan)
-                        .addGap(54, 54, 54)
+                        .addGap(49, 49, 49)
                         .addComponent(btnEdit)
-                        .addGap(51, 51, 51)
+                        .addGap(56, 56, 56)
                         .addComponent(btnHapus))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -218,13 +226,61 @@ public class FormPenyewaan extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNamaActionPerformed
 
     private void cbTipeKendaraanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipeKendaraanActionPerformed
-        String jenisKendaraan = (String) cbJenisKendaraan.getSelectedItem();
-        
-        // Jika jenis kendaraan dipilih, update cbTipeKendaraan
-        if (jenisKendaraan != null && !jenisKendaraan.isEmpty()) {
-            updateTipeKendaraan(jenisKendaraan);
-        }
+       
     }//GEN-LAST:event_cbTipeKendaraanActionPerformed
+
+    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
+        try {
+            String namaCustomer = txtNama.getText();
+            String jenisKendaraan = (String) cbJenisKendaraan.getSelectedItem();
+            String tipeKendaraan = (String) cbTipeKendaraan.getSelectedItem();
+            String platNomor = "";
+            String tglSewaString = txtTanggalSewa.getText();
+            String tglKembaliString = txtTanggalKembali.getText();
+            
+            Date startDate = convertToDate(tglSewaString);
+            Date endDate = convertToDate(tglKembaliString);
+            
+            if (namaCustomer.isEmpty() || jenisKendaraan.isEmpty() || tipeKendaraan.isEmpty() || tglSewaString.isEmpty() || tglKembaliString.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Mohon lengkapi semua data!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Hitung durasi dan biaya
+            long durasi = calculateDurasi(startDate, endDate);
+            double totalBiaya = calculateTotalBiaya(tipeKendaraan, durasi);
+            
+            String queryPlat = "SELECT plat_nomor from kendaraan where tipe_kendaraan = ?";
+            try(Connection conn = DatabaseSewa.getConnection();
+                    PreparedStatement ps = conn.prepareStatement(queryPlat)) {
+                ps.setString(1, tipeKendaraan);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    platNomor = rs.getString("plat_nomor");
+                
+                } 
+            }
+            
+             String insertQuery = "INSERT INTO penyewaan (nama_customer, jenis_kendaraan, tipe_kendaraan, plat_nomor, tanggal_sewa, tanggal_kembali, total_biaya) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            try (Connection conn = DatabaseSewa.getConnection();
+             PreparedStatement ps = conn.prepareStatement(insertQuery)) {
+            ps.setString(1, namaCustomer);
+            ps.setString(2, jenisKendaraan);
+            ps.setString(3, tipeKendaraan);
+            ps.setString(4, platNomor);
+            ps.setDate(5, new java.sql.Date(startDate.getTime()));
+            ps.setDate(6, new java.sql.Date(endDate.getTime()));
+            ps.setDouble(7, totalBiaya);
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Data penyewaan berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+        }
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(this, "Format tanggal salah! Gunakan format dd/MM/yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error menyimpan data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSimpanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -331,8 +387,80 @@ public class FormPenyewaan extends javax.swing.JFrame {
                     "Terjadi kesalahan saat mengambil data tipe kendaraan.\n" + e.getMessage(), 
                     "Error", 
                     JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private long calculateDurasi(Date startDate, Date endDate) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date start = startDate;
+        Date end = endDate;
+        long diff = end.getTime() - start.getTime();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS); // Konversi ke hari
+    }
+
+    private double calculateTotalBiaya(String tipeKendaraan, long durasi) {
+        double biayaPerHari = 0;
+        String query = "SELECT biaya FROM kendaraan WHERE tipe_kendaraan = ?";
+        try (Connection conn = DatabaseSewa.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, tipeKendaraan);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                biayaPerHari = rs.getDouble("biaya");
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error calculating biaya: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return biayaPerHari * durasi;
+    }
+    
+    public Date convertToDate(String dateStr) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy"); // Example format
+        try {
+            return dateFormat.parse(dateStr); // Convert the string to Date
+        } catch (ParseException e) {
+            e.printStackTrace(); // Handle exception if the string is not in the correct format
+            return null; // Return null if the parsing fails
+        }
+    }
+    private void loadDataPenyewaan() {
+        // Model tabel untuk tblPenyewaan
+        DefaultTableModel model = (DefaultTableModel) tblPenyewaan.getModel();
+
+        // Menghapus data sebelumnya di tabel
+        model.setRowCount(0);
+
+        String query = "SELECT id, nama_customer, jenis_kendaraan, tipe_kendaraan, plat_nomor, tanggal_sewa, tanggal_kembali, total_biaya FROM penyewaan";
+
+        try (Connection conn = DatabaseSewa.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            // Loop untuk memasukkan data ke dalam tabel
+            while (rs.next()) {
+                // Ambil data dari hasil query
+                int id = rs.getInt("id");
+                String namaCustomer = rs.getString("nama_customer");
+                String jenisKendaraan = rs.getString("jenis_kendaraan");
+                String tipeKendaraan = rs.getString("tipe_kendaraan");
+                String platNomor = rs.getString("plat_nomor");
+                Date tglSewa = rs.getDate("tanggal_sewa");
+                Date tglKembali = rs.getDate("tanggal_kembali");
+                double totalBiaya = rs.getDouble("total_biaya");
+
+                // Format tanggal ke format yang diinginkan (misalnya dd/MM/yyyy)
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                String tglSewaStr = dateFormat.format(tglSewa);
+                String tglKembaliStr = dateFormat.format(tglKembali);
+
+                // Tambahkan data ke dalam model tabel
+                model.addRow(new Object[] {
+                    id, namaCustomer, jenisKendaraan, tipeKendaraan, platNomor, tglSewaStr, tglKembaliStr, totalBiaya
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error loading data penyewaan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
-    
