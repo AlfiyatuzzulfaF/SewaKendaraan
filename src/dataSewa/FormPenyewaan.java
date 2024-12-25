@@ -298,6 +298,8 @@ public class FormPenyewaan extends javax.swing.JFrame {
             ps.setDouble(7, totalBiaya);
             ps.executeUpdate();
             JOptionPane.showMessageDialog(this, "Data penyewaan berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+            loadDataPenyewaan();
+            kosongkanForm();
         }
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(this, "Format tanggal salah! Gunakan format dd/MM/yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -355,7 +357,8 @@ public class FormPenyewaan extends javax.swing.JFrame {
 
                 // Menampilkan pesan sukses
                 JOptionPane.showMessageDialog(FormPenyewaan.this, "Data penyewaan berhasil diperbarui!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                loadDataPenyewaan(); // Reload data penyewaan setelah update
+                loadDataPenyewaan();
+                kosongkanForm();
             }
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(FormPenyewaan.this, "Format tanggal salah! Gunakan format dd/MM/yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
